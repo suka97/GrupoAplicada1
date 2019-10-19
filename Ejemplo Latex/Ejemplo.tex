@@ -1,0 +1,123 @@
+% Esto es un comentario, te das cuenta porque arranca con '%'
+% En Latex todo lo que arranca con '\' es algun comando para el compilador
+% El compilador es el que se encargara de convertir todo el codigo en un pdf
+
+% Indico el tipo de hoja al compilador
+\documentclass[a4paper,12pt]{article}
+
+% Paquetes que incluyo, como librerias en programacion
+\usepackage[a4paper, total={190mm, 250mm}]{geometry}
+\usepackage{amsmath, accents, graphicx, caption, siunitx, float}
+\usepackage[bookmarks]{hyperref}
+
+% Prototipos de comandos definidos por mi. Estos se van a usar a lo largo del documanto
+\newcommand*\rfrac[2]{{}^{#1}\!/_{#2}}
+\newcommand{\im}[1]{j\; #1} 
+\newcommand{\parallelTwo}[2]{\left.#1\,\middle/\!\middle/\,#2\right.}
+
+
+% ----------------------------------------- Arranca Finalmente el documento --------------------------------------------------
+\begin{document}
+
+% 'section{...}' le indicara al compilador que esta seccion arranca una seccion con un nombre determinado
+% sabiendo esto el documento tomara una forma determinada, particularmente creara un titulo y un acceso rapido en el indice del pdf
+\section{Mi titulo 1}
+
+    % 'subsection{...}' creara un subtitulo y todo lo demas, similar al section 
+    \subsection{Mi subtitulo 1}
+
+        % Puedo escribir lo que quiera 
+        Estoy escribiendo esto como muestra
+        (al compilador no le importara que se encuentren en diferentes renglones aca).
+
+        Si quisiera expresamente bajar un renglon
+        \\ pondria una doble barra adelante
+        \\
+        \\ El compilador, por como esta hecho el doc, identara todos los renglones excepto el primero del parrafo
+
+        Incluyo una imagen, lo meto dentro de begin{center} para que quede centrada nomas
+        % El compilador se encargara de ajustar el tamano de la imagen
+        \begin{center}
+            \includegraphics[width=100mm]{./Logo_UTN.png}
+        \end{center}
+
+        Y puedo agregar una imagen tambien mas profecionalmente:
+        \begin{figure}[H]
+            \centering
+		    \captionsetup{labelformat=empty}
+            \includegraphics[width=100mm]{./Logo_UTN.png}
+            \caption{Respuesta en Matlab (mismo orden de respuestas que grafico LTSpice)}
+        \end{figure}
+
+
+    % newpage indica que quiero que lo demas empiece en otra pag
+    \newpage
+    \subsection{Ecuaciones}
+
+        \subsubsection{Base}
+
+            Las ecuaciones en Latex pueden estar en el renglon $1 + 3 = 4$ \\
+            O ser un componente aparte:
+            \begin{gather*}
+                1 +       3 = 4
+            \end{gather*}
+            % Dentro del gather me parece que no se admiten renglones en blanco, evitenlos
+
+            Vemos de esta forma que dentro del texto que compone a la ecuacion, al compilador no le interesan los espacios que coloquemos.
+            Para indicar un espacio aqui deberemos indicarlo por un caracter especial. Existen varios dependiendo de la longitud que queramos
+            agregar, pero yo normalmente uso el \;, y si quiero mas espacio los apilo \;\;\;\;\; asi. \\
+            
+            Podemos poner subindices tambien: $V_1(t)$ \\
+            Y si el subindice es mas largo que un caracter: $V_{subindice}$ \\
+
+        \subsubsection{Avanzado}
+
+            Para hacer ecuaciones mas piolas hay que empezar a meterse con funciones para el compilador. \\
+            Por ejemplo podemos hacer una especie de fraccion (existen varios tipos, yo uso estas que son las mas piolas):
+            \begin{gather*}
+                I(t) = \cfrac{V(t)}{R} \\
+                I(t) = \rfrac{V(t)}{R}
+            \end{gather*}
+            
+            Podemos agregar una flecha como si fuera un "por lo tanto":
+            \begin{gather*}
+                I(t) = \cfrac{V(t)}{R}
+                \Longrightarrow
+                V(t) = I(t) \; \cdot \; R   % cdot me hace el punto piola que indica multiplicacion
+            \end{gather*}
+
+            Podemos colocar unidades escribiendolas o, como lo hago normalmente yo para que quede mas piola, diciendole 
+            al compilador la unidad y que este s encargue. \\
+            Por ejemplo: $10 Hz$ y sino $\SI{10}{\hertz}$ \\
+
+            Ota cosa que me hice para que quede piola es el paralelo: $R_12 = \parallelTwo{R_1}{R_2}$ \\
+            O tambien si tengo que colocar un numero imaginario hacer $1 + \im{2}$ en lugar de $1 + j2$. 
+            Esto de hincha nomas, el comando me lo invente yo jaja. \\
+
+
+            Y bueno tambien se pueden hacer matrices, raices y todos los chicches. \\
+            Aca les dejo unos ejemplos:
+
+            % Ejemplo ecuacion loca
+            \begin{gather*}
+                Z_T(w) = \im{X_L} + \big( \parallelTwo{R}{(-\im{X_C})} \big)
+                    = \im{wL} + \bigg( \cfrac{1}{R} + jwC \bigg)^{-1} = \im{wL} + \cfrac{R}{1+jwCR} \\
+                Z_T(w) = \im{wL} + \cfrac{R-\im{wCR^2}} {1+w^2C^2R^2}
+                    = \cfrac{ \im{wL} + \im{w^3LC^2R^2} + R - \im{wCR^2} } { 1 + w^2C^2R^2 } \\
+                Z_T(w) = \cfrac{ R + \im{( w^3LC^2R^2 + wL - wCR^2 )} } { 1 + w^2C^2R^2 }
+            \end{gather*}
+
+            % Ejemplo matriz
+            \begin{gather*}
+                \begin{bmatrix} \accentset{\circ}{ X_1}(t) \\ \\ \accentset{\circ}{ X_2}(t) \end{bmatrix} =
+                    \begin{bmatrix} -\cfrac{1}{RC}  &\; \cfrac{1}{C} \\[10pt] -\cfrac{1}{L} &\; 0 \end{bmatrix} 
+                    \begin{bmatrix} X_1(t) \\\\  X_2(t) \end{bmatrix}
+                    + \begin{bmatrix} \cfrac{1}{RC} \\[10pt] \cfrac{1}{L} \end{bmatrix} \; V_i(t)
+                \\[10pt]
+                \begin{bmatrix} V_o(t) \\[10pt] V_L(t) \\[10pt] i_L(t) \\[10pt] i_C(t) \\[10pt] i_R(t) \end{bmatrix} = 
+                    \begin{bmatrix} -1 &\; 0 \\[10pt] 1 &\; 0 \\[10pt] 3 &\; 1 \\[10pt] \rfrac{-1}{R} &\; 1 \\[10pt] \rfrac{-1}{R} &\; 0 \end{bmatrix}
+                    \begin{bmatrix} X_1(t) \\\\  X_2(t) \end{bmatrix}
+                    + \begin{bmatrix} 1 \\[10pt] 0 \\[10pt] 0 \\[10pt] \rfrac{1}{R} \\[10pt] \rfrac{1}{R}\; \end{bmatrix} \; V_i(t)
+            \end{gather*}
+\end{document}
+% ------------------------------------------------- Fin del documento --------------------------------------------------
