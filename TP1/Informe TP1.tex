@@ -1,9 +1,9 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage[
-    a4paper, bindingoffset=0.2in, left=5mm, right=5mm, 
-    top=30mm, bottom=18mm, footskip=5.5mm, headheight=15mm
+    a4paper, bindingoffset=0.2in, left=10mm, right=10mm, 
+    top=30mm, bottom=27mm, footskip=5.5mm, headheight=15mm      % tuve que cambiar el bottom porque queda no imprimible por mi impresora
 ]{geometry}
-\usepackage{amsmath, accents, graphicx, caption, siunitx, float, fancyhdr}
+\usepackage{amsmath, accents, graphicx, caption, siunitx, float, fancyhdr, lastpage}
 \usepackage[bookmarks]{hyperref}
 \newcommand*\rfrac[2]{{}^{#1}\!/_{#2}}
 \newcommand{\im}[1]{j\; #1} 
@@ -29,7 +29,7 @@
 }
 \cfoot{}
 \renewcommand{\footrulewidth}{0.4pt}% default is 0pt
-\rfoot{\small{Pag \thepage}}
+\rfoot{\small{ Pag \thepage \; de \pageref*{LastPage} }}
 
 
 % ---------------------- Inicio Documento -------------------
@@ -39,7 +39,7 @@
 \section{Introduccion}
     Se planteo como objetivo lograr el diseño de un amplificador monoetapa con una resistencia de entrada decente
     y cuya ganancia fuera de entre 4 y 5 veces. 
-    La resistencia de la señal se planteo como $\SI{50}{\ohm}$, valor típico de las fuentes de laboratorio.
+    La resistencia de la señal de entrada se planteo como $\SI{50}{\ohm}$, valor típico de las fuentes de laboratorio.
     \\ \\
     Para satisfacer las necesidades impuestas se decidio por el diseño de un $R_E$ sin puentear. 
     \\ \\
@@ -49,6 +49,13 @@
     \\ \\
     Luego del diseño, en el cual se trato de imponer una $I_C \approx \mI{1}$, una $Av \approx 5$ y una $V_{cc} = \mV{3}$, 
     se obtuvo el siguiente circuito: 
+    \begin{figure}[H]
+        \setlength{\abovecaptionskip}{0pt}
+		\centering
+		\captionsetup{labelformat=empty}
+		\fbox{ \includegraphics[height=90mm]{./imagenes/Circuito.png} }
+		\caption{\small{\textit{ Circuito diseñado }}}
+    \end{figure}
 
 \newpage
 \section{Calculos}
@@ -61,8 +68,23 @@
         \item $V_A = \mV{-100}$
     \end{itemize}
 
+    Analisando el cirucito estático, se obtiene el siguiente circuito:
+    \begin{figure}[H]
+        \setlength{\abovecaptionskip}{0pt}
+		\centering
+		\captionsetup{labelformat=empty}
+		\fbox{ \includegraphics[height=70mm]{./imagenes/Circuito_Estatico.png} }
+		\caption{\small{\textit{ Circuito estático }}}
+    \end{figure}
+
     Planteando Thevenin en la base del transitor se obtiene el siguiente circuito:
-    % insertar circ estatico con RB
+    \begin{figure}[H]
+        \setlength{\abovecaptionskip}{0pt}
+		\centering
+		\captionsetup{labelformat=empty}
+		\fbox{ \includegraphics[height=80mm]{./imagenes/Circuito_Estatico_Thevennin.png} }
+		%\caption{\small{\textit{ Circuito a simular }}}
+    \end{figure}
     Donde:
     \begin{gather*}
         V_{TH} = V_{CC} \cdot \cfrac{R_2}{R_1 + R_2} 
@@ -76,7 +98,7 @@
         V_{TH} - I_B R_B - V_{BE} - I_E R_E = \mV{0} \\
         V_{TH} - V_{BE} - I_B ( R_B + (h_{FE}+1) R_E ) = \mV{0} \\
         I_B = \cfrac{V_{TH} - V_{BE}}{R_B + ( h_{FE}+1 ) R_E} 
-            = \cfrac{ \mV{0.85} - \mV{0.6} } { \mR{1.58} + (300+1) \mR{0.22} = \mIu{3.69} }
+            = \cfrac{ \mV{0.85} - \mV{0.6} } { \mR{1.58} + (300+1) \mR{0.22} } = \mIu{3.69} 
     \end{gather*}
 
     Y conociendo las caracteristicas del transistor:
@@ -89,6 +111,15 @@
 
 
 \subsection{Dinamico}
+    Analisando el cirucito dinámico, se obtiene el siguiente circuito:
+    \begin{figure}[H]
+        \setlength{\abovecaptionskip}{0pt}
+		\centering
+		\captionsetup{labelformat=empty}
+		\fbox{ \includegraphics[height=80mm]{./imagenes/Circuito_Dinamico.png} }
+		\caption{\small{\textit{ Circuito dinámico }}}
+    \end{figure}
+
     Segun el punto Q calculado en el estatico:
     \begin{gather*}
         g_m = \SI{40}{\cfrac{1}{\volt}} \cdot I_C = \SI{40}{\cfrac{1}{\volt}} \cdot \mI{1.11} = \SI{44.4}{\cfrac{mA}{V}}
@@ -114,29 +145,23 @@
     \begin{gather*}
         R_D = \parallelTwo{R_C}{R_L} = \parallelTwo{\mR{1.2}}{\mR{10}} = \mR{1.07}
         \\ \\
-        A_v = \cfrac{v_o}{v_i} = \cfrac{ i_c \; (\parallelTwo{R_D}{R_o}) } { i_b R_i } 
-            = \cfrac{ h_{FE} \; (\parallelTwo{R_D}{R_o}) } { R_i } \\
-        A_v = \cfrac{ 300 \; (\parallelTwo{\mR{1.07}}{935}) } { \mR{73} } = 4.4
+        A_v = \cfrac{v_o}{v_i} = -\; \cfrac{ i_c \; (\parallelTwo{R_D}{R_o}) } { i_b R_i } 
+            = -\; \cfrac{ h_{FE} \; (\parallelTwo{R_D}{R_o}) } { R_i } \\
+        A_v = -\; \cfrac{ 300 \; (\parallelTwo{\mR{1.07}}{935}) } { \mR{73} } = -4.4
         \\ \\
-        A_{vs} = A_v \; \cfrac{v_i}{v_s} = A_v \; \cfrac{R_B}{R_B + R_S} = 4.4 \; \cfrac{\mR{1.58}}{\mR{1.58} + \mR{0.05}} = 4.26
+        A_{vs} = A_v \; \cfrac{v_i}{v_s} = A_v \; \cfrac{R_B}{R_B + R_S} = -4.4 \; \cfrac{\mR{1.58}}{\mR{1.58} + \mR{0.05}} = -4.26
     \end{gather*}
 
 
 \newpage
 \section{Simulacion}
     %Al no disponer del modelo exacto de spice para el BC337 las simulaciones se realizaron utilizando el modelo generico NPN 200. \\
-    La curva de ganancia obtenida fue la siguiente:
     \begin{figure}[H]
+        \setlength{\abovecaptionskip}{0pt}
 		\centering
 		\captionsetup{labelformat=empty}
-		\includegraphics[height=80mm]{./imagenes/Circuito.png}
-		\caption{\small{Circuito a simular}}
-    \end{figure}
-    \begin{figure}[H]
-		\centering
-		\captionsetup{labelformat=empty}
-		\includegraphics[height=80mm]{./imagenes/Curva_Ganancia.png}
-		\caption{\small{Curva de ganancia}}
+		\fbox{ \includegraphics[height=80mm]{./imagenes/Curva_Ganancia.png} }
+		\caption{\small{\textit{ Curva de ganancia }}}
     \end{figure}
 
     El resto de los resultados se indican en la tabla presente en la siguiente seccion.
@@ -155,8 +180,8 @@
         $V_{CEQ}$     & \mV{1.42}       & \mV{1.52}           & \mV{1.39}         \\ \hline
         $I_{CQ}$      & \mI{1.11}       & \mI{1.04}           & \mI{1.15}         \\ \hline
         $V_{CBQ}$     & \mV{0.82}       & \mV{0.9}            & \mV{0.8}          \\ \hline
-        $A_v$         & 4.4             & 4.36                & 4.4               \\ \hline
-        $A_{vs}$      & 4.26            & 4.22                & 4.3               \\ \hline
+        $A_v$         & -4.4            & -4.36               & -4.4              \\ \hline
+        $A_{vs}$      & -4.26           & -4.22               & -4.3              \\ \hline
     \end{tabular}
 \end{table}
 
@@ -212,6 +237,9 @@
         $R_o$       & $\mR{935}$        &                   \\ \hline
     \end{tabular}
 \end{table}
+
+Durante la práctica hubo inconvenientes para medir los valores de $R_i$ y $R_o$, por lo que las casillas de estos quedan libres
+para completar en su posterior medición.
 
 
 \newpage
